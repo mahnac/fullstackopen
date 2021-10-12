@@ -24,7 +24,7 @@ const App = () => {
         return (good + (bad * -1)) / sum()
     }
     const positive = () => {
-        return good / (bad + neutral + good) * 100
+        return `${good / (bad + neutral + good) * 100} %`
     }
 
     return (
@@ -50,12 +50,16 @@ const Statistics = ({good, bad, neutral, sum, average, positive}) => {
         return (
             <div>
                 <h1>statistics</h1>
-                <StatisticsLine text="good" value={good}/>
-                <StatisticsLine text="neutral" value={neutral}/>
-                <StatisticsLine text="bad" value={bad}/>
-                <StatisticsLine text="all" value={sum}/>
-                <StatisticsLine text="average" value={average}/>
-                <StatisticsLine text="positive" value={positive}/>
+                <table>
+                    <tbody>
+                    <StatisticsLine text="good" value={good}/>
+                    <StatisticsLine text="neutral" value={neutral}/>
+                    <StatisticsLine text="bad" value={bad}/>
+                    <StatisticsLine text="all" value={sum}/>
+                    <StatisticsLine text="average" value={average}/>
+                    <StatisticsLine text="positive" value={positive}/>
+                    </tbody>
+                </table>
             </div>
         );
     }
@@ -64,7 +68,10 @@ const Statistics = ({good, bad, neutral, sum, average, positive}) => {
 
 const StatisticsLine = ({text, value}) => {
     return (
-        <p>{text} {value}</p>
+        <tr>
+            <td>{text}</td>
+            <td>{value}</td>
+        </tr>
     )
 }
 
