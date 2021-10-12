@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 
 const App = () => {
     const anecdotes = [
@@ -13,11 +13,17 @@ const App = () => {
 
     const [selected, setSelected] = useState(0)
     const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+    const [mostVotesIndex, setMostVotesIndex] = useState(0);
 
     const handleVoteClick = () => {
         const currentVotes = [...votes]
         currentVotes[selected]++
         setVotes(currentVotes)
+
+        // Keep track of anecdote with most votes
+        if (currentVotes[selected] > currentVotes[mostVotesIndex]) {
+            setMostVotesIndex(selected)
+        }
     }
 
     const handleClick = () => {
@@ -31,6 +37,9 @@ const App = () => {
             <p>has {votes[selected]} votes</p>
             <button onClick={handleVoteClick}>vote</button>
             <button onClick={handleClick}>next anecdote</button>
+            <h1>Anecdote with most votes</h1>
+            <p>{anecdotes[mostVotesIndex]}</p>
+            <p>has {votes[mostVotesIndex]} votes</p>
         </div>
     )
 }
