@@ -6,6 +6,8 @@ import CountryList from "./components/CountryList"
 const App = () => {
     const [countries, setCountries] = useState([])
     const [query, setQuery] = useState('')
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const handleQueryChange = (event) => {
         setQuery(event.target.value)
@@ -22,8 +24,18 @@ const App = () => {
                 const countries = response.data
                 setCountries(countries)
             })
+            .catch((error) => {
+                console.error("Error fetching countries data: ", error);
+                setError(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }
     useEffect(fetchCountries, [])
+
+    if (loading) return <div>Loading countries...</div>
+    if (error) return <div>Error loading countries...</div>
 
     const filterCountriesByName = name => {
         const filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(name.toLowerCase()))
