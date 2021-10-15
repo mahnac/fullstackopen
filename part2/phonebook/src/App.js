@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import Filter from "./components/Filter";
-import Persons from "./components/Persons";
-import PersonForm from "./components/PersonForm";
-import axios from "axios";
+import Filter from "./components/Filter"
+import Persons from "./components/Persons"
+import PersonForm from "./components/PersonForm"
+import personService from './services/persons'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -10,17 +10,12 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
 
-    const fetchPeople = () => {
+    const fetchPersons = () => {
         console.log('effect')
-        axios
-            .get('http://localhost:3001/persons')
-            .then(response => {
-                console.log('promise fulfilled')
-                setPersons(response.data)
-            })
+        personService.getAll().then(initialPersons => setPersons(initialPersons))
     }
 
-    useEffect(fetchPeople, [])
+    useEffect(fetchPersons, [])
 
     console.log('render', persons.length, 'persons')
 
@@ -30,23 +25,24 @@ const App = () => {
 
     const handleNameChange = event => setNewName(event.target.value)
     const handleNumberChange = event => setNewNumber(event.target.value)
-    const handleFilterChange = event => setFilter(event.target.value.toLowerCase());
+    const handleFilterChange = event => setFilter(event.target.value.toLowerCase())
 
-    const checkIfPersonWithNameExists = name => persons.some(person => person.name === name);
+    const checkIfPersonWithNameExists = name => persons.some(person => person.name === name)
     const createPerson = (name, number) => {
         const newPerson = {
             name: name,
             number: number,
-            id: ++persons.length
         }
-        setPersons(persons.concat(newPerson))
-    };
+        personService.create(newPerson).then(returnedPerson => {
+            setPersons(persons.concat(returnedPerson))
+        })
+    }
     const addPerson = event => {
         event.preventDefault()
-        const personIsFound = checkIfPersonWithNameExists(newName);
+        const personIsFound = checkIfPersonWithNameExists(newName)
 
         if (!personIsFound) {
-            createPerson(newName, newNumber);
+            createPerson(newName, newNumber)
         } else {
             alert(`${newName} is already added to phonebook`)
         }
@@ -56,9 +52,9 @@ const App = () => {
         setNewNumber('')
 
         // clear input fields
-        event.target[0].value = '';
-        event.target[1].value = '';
-    };
+        event.target[0].value = ''
+        event.target[1].value = ''
+    }
 
     return (
         <div>

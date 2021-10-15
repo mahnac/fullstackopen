@@ -1,11 +1,11 @@
-import axios from "axios";
-import {useEffect, useState} from "react";
+import axios from "axios"
+import {useEffect, useState} from "react"
 
 const Weather = ({capital}) => {
     const [weather, setWeather] = useState({})
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true)
     const [icon, setIcon] = useState(null)
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null)
 
     const apiKey = process.env.REACT_APP_API_KEY
 
@@ -18,12 +18,12 @@ const Weather = ({capital}) => {
                 setIcon(response.data.current.weather_icons[0])
             })
             .catch((error) => {
-                console.error("Error fetching weather data: ", error);
-                setError(error);
+                console.error("Error fetching weather data: ", error)
+                setError(error)
             })
             .finally(() => {
-                setLoading(false);
-            });
+                setLoading(false)
+            })
     }
     useEffect(fetchWeather, [apiKey, capital])
 
@@ -37,7 +37,7 @@ const Weather = ({capital}) => {
             <img src={icon} alt="weather icon"/>
             <p>wind: {weather.wind_speed} km/h direction {weather.wind_dir}</p>
         </div>
-    );
-};
+    )
+}
 
-export default Weather;
+export default Weather
