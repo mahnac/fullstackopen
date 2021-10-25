@@ -10,6 +10,7 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
     const [successMsg, setSuccessMsg] = useState(null)
+    const [errorMsg, setErrorMsg] = useState(null)
 
     const fetchPersons = () => {
         console.log('effect')
@@ -57,9 +58,25 @@ const App = () => {
 
     const updatePerson = (number, person) => {
         const changedPerson = {...person, number: number}
-        personService.update(person.id, changedPerson).then(changedPerson => {
-            setPersons(persons.map(person => person.id !== changedPerson.id ? person : changedPerson))
-        })
+        personService
+            .update(person.id, changedPerson)
+            .then(changedPerson => {
+                setPersons(persons.map(person => person.id !== changedPerson.id ? person : changedPerson))
+            })
+            .then(() => {
+                setSuccessMsg(`${changedPerson.name} was updated.`)
+                setTimeout(() => {
+                    setSuccessMsg(null)
+                }, 5000)
+            })
+            .catch(error => {
+                setErrorMsg(
+                    `Information of ${changedPerson.name} has already been removed from the server.`
+                )
+                setTimeout(() => {
+                    setErrorMsg(null)
+                }, 5000)
+            })
     }
 
     const addPerson = event => {
@@ -92,6 +109,7 @@ const App = () => {
             <PersonForm onSubmit={addPerson} handleNameChange={handleNameChange}
                         handleNumberChange={handleNumberChange}/>
             <Notification message={successMsg}/>
+            <Error message={errorMsg}/>
             <h3>Numbers</h3>
             <PersonList removePerson={removePerson} personsToShow={personsToShow}/>
         </div>
@@ -105,6 +123,17 @@ const Notification = ({message}) => {
 
     return (
         <div className="success">
+            {message}
+        </div>
+    )
+}
+const Error = ({message}) => {
+    if (message === null) {
+        return null
+    }
+
+    return (
+        <div className="error">
             {message}
         </div>
     )
