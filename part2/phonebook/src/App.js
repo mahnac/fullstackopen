@@ -9,6 +9,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
+    const [successMsg, setSuccessMsg] = useState(null)
 
     const fetchPersons = () => {
         console.log('effect')
@@ -41,9 +42,17 @@ const App = () => {
             name: name,
             number: number,
         }
-        personService.create(newPerson).then(returnedPerson => {
-            setPersons(persons.concat(returnedPerson))
-        })
+        personService
+            .create(newPerson)
+            .then(returnedPerson => {
+                setPersons(persons.concat(returnedPerson))
+            })
+            .then(() => {
+                setSuccessMsg(`${newPerson.name} was added.`)
+                setTimeout(() => {
+                    setSuccessMsg(null)
+                }, 5000)
+            })
     }
 
     const updatePerson = (number, person) => {
@@ -82,9 +91,21 @@ const App = () => {
             <h3>Add a new Person:</h3>
             <PersonForm onSubmit={addPerson} handleNameChange={handleNameChange}
                         handleNumberChange={handleNumberChange}/>
-
+            <Notification message={successMsg}/>
             <h3>Numbers</h3>
             <PersonList removePerson={removePerson} personsToShow={personsToShow}/>
+        </div>
+    )
+}
+
+const Notification = ({message}) => {
+    if (message === null) {
+        return null
+    }
+
+    return (
+        <div className="success">
+            {message}
         </div>
     )
 }
